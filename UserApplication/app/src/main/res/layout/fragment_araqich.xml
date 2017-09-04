@@ -1,13 +1,50 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.android.userapplication.Fragments.AraqichFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <Button
+        android:id="@+id/fixed_tariff_araqich"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fixed_tariff" />
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/liner_bernatar_araqich"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fixed_tariff_araqich">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_local_shipping_black_24dp" />
+
+        <Button
+            android:id="@+id/araqich_trucks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/trucks" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/liner_mardatar_araqich"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/liner_bernatar_araqich">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_local_taxi_black_24dp" />
+
+        <Button
+            android:id="@+id/araqich_passenger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/passenger" />
+    </LinearLayout>
+
+
+</RelativeLayout>

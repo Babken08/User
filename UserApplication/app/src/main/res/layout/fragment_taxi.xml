@@ -1,13 +1,41 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.android.userapplication.Fragments.TaxiFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <Button
+        android:id="@+id/fixed_tariff_taxi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fixed_tariff" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/place4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fixed_tariff_taxi"
+        android:text="@string/_4_place" />
+
+    <TextView
+        android:id="@+id/minimal_sakagin_200"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/place4"
+        android:text="@string/min_tariff_200" />
+
+    <Button
+        android:id="@+id/place7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/minimal_sakagin_200"
+        android:text="@string/_7_place" />
+
+    <TextView
+        android:id="@+id/minimal_sakagin_300"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/place7"
+        android:text="@string/min_tariff_300" />
+
+</RelativeLayout>
