@@ -7,45 +7,28 @@
 
     <RadioGroup
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
 
-        <LinearLayout
+        <RadioButton
+            android:id="@+id/araqich_trucks"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_local_shipping_black_24dp"
+            android:text="@string/trucks" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_local_taxi_black_24dp" />
-
-            <RadioButton
-                android:id="@+id/araqich_passenger"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/passenger" />
-        </LinearLayout>
-
-        <LinearLayout
+        <RadioButton
+            android:id="@+id/araqich_passenger"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_local_shipping_black_24dp" />
-
-            <RadioButton
-                android:id="@+id/araqich_trucks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/trucks" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_local_taxi_black_24dp"
+            android:text="@string/passenger" />
     </RadioGroup>
 
+
     <RadioGroup
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -87,6 +70,7 @@
     </LinearLayout>
 
     <Button
+        android:layout_gravity="center"
         android:id="@+id/araqich_amragrel_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

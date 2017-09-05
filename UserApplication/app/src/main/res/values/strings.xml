@@ -18,6 +18,6 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="address">address</string>
     <string name="ok">ok</string>
-    <string name="trucks">Trucks</string>
     <string name="passenger">Passenger</string>
+    <string name="trucks">Trucks</string>
 </resources>
