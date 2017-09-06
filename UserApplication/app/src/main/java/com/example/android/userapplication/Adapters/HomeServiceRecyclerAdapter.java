@@ -40,9 +40,9 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
 
     @Override
     public void onBindViewHolder(final HomeServiceRecyclerAdapter.MyViewHolder holder, final int position) {
-        if (position == 0) holder.button.setImageResource(R.drawable.taxi);
-        if (position == 1) holder.button.setImageResource(R.drawable.shipping);
-        if (position == 2) holder.button.setImageResource(R.drawable.evacuator);
+        if (position == 0) holder.button.setImageResource(R.mipmap.ic_taxi_256);
+        if (position == 1) holder.button.setImageResource(R.mipmap.ic_shipping_256);
+        if (position == 2) holder.button.setImageResource(R.mipmap.ic_evacuator_256);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
