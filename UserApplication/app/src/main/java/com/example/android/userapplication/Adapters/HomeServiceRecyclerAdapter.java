@@ -50,6 +50,37 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
 
     @Override
     public void onBindViewHolder(final HomeServiceRecyclerAdapter.MyViewHolder holder, final int position) {
+        mipmapIcon(holder, position);
+        holderOnClickListener(holder, position);
+    }
+
+    private void holderOnClickListener(MyViewHolder holder, final int position) {
+        holder.button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (position == 0)
+                    alertDialog(TAXI_SIZE_4);
+                if (position == 1)
+                    alertDialog(SHIPPING_TRUCK);
+                if (position == 2)
+                    alertDialog(EVAKUATOR);
+            }
+        });
+
+        holder.button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (position == 0)
+                    alertDialog(TAXI_SIZE_7);
+                if (position == 1)
+                    alertDialog(SHIPPING_AUTO);
+                if (position == 2)
+                    alertDialog(MANIPULYATOR);
+            }
+        });
+    }
+
+    private void mipmapIcon(MyViewHolder holder, int position) {
         if (position == 0) {
             holder.button1.setImageResource(R.mipmap.ic_taxi_256);
             holder.button2.setImageResource(R.mipmap.ic_logo_taxi);
@@ -74,31 +105,6 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
 //            holder.name2.setText("TOR");
             holder.name3.setText(MANIPULYATOR);
         }
-
-        holder.button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (position == 0)
-                    alertDialog(TAXI_SIZE_4);
-                if (position == 1)
-                    alertDialog(SHIPPING_TRUCK);
-                if (position == 2)
-                    alertDialog(EVAKUATOR);
-            }
-        });
-
-        holder.button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (position == 0)
-                    alertDialog(TAXI_SIZE_7);
-                if (position == 1)
-                    alertDialog(SHIPPING_AUTO);
-                if (position == 2)
-                    alertDialog(MANIPULYATOR);
-            }
-        });
-
     }
 
     private void alertDialog(final String c) {
