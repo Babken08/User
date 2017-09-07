@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.userapplication.Activityes.HomeActivity;
 import com.example.android.userapplication.Fragments.AraqichAmragrumFragment;
@@ -22,8 +24,16 @@ import java.util.List;
 
 public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeServiceRecyclerAdapter.MyViewHolder> {
 
+    private static final String TAXI_SIZE_4 = "SIZE 4";
     private static final String TAXI = "TAXI";
-    private static final String ARAQICH = "ARAQICH";
+    private static final String TAXI_SIZE_7 = "SIZE 7";
+    private static final String SHIPPING = "SHIPPING";
+    private static final String SHIPPING_TRUCK = "SHIPPING TRUCK";
+    private static final String SHIPPING_AUTO = "SHIPPING AUTO";
+    private static final String EVAKUATOR = "EVAKUATOR";
+    private static final String MANIPULYATOR = "MANIPULYATOR";
+
+
     private List<LogoModel> list;
     private Context context;
 
@@ -40,22 +50,42 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
 
     @Override
     public void onBindViewHolder(final HomeServiceRecyclerAdapter.MyViewHolder holder, final int position) {
-        if (position == 0) holder.button.setImageResource(R.mipmap.ic_taxi_256);
-        if (position == 1) holder.button.setImageResource(R.mipmap.ic_shipping_256);
-        if (position == 2) holder.button.setImageResource(R.mipmap.ic_evacuator_256);
+        if (position == 0){
+            holder.button1.setImageResource(R.mipmap.ic_taxi_256);
+            holder.button2.setImageResource(R.mipmap.ic_logo_taxi);
+            holder.button3.setImageResource(R.mipmap.ic_taxi_1);
+            holder.name1.setText(TAXI_SIZE_4);
+//            holder.name2.setText(TAXI);
+            holder.name3.setText(TAXI_SIZE_7);
+        }
+        if (position == 1){
+            holder.button1.setImageResource(R.mipmap.ic_shipping_256);
+            holder.button2.setImageResource(R.mipmap.ic_shipping_logo);
+            holder.button3.setImageResource(R.mipmap.ic_shipping_auto);
+            holder.name1.setText(SHIPPING_TRUCK );
+//            holder.name2.setText(SHIPPING);
+            holder.name3.setText(SHIPPING_AUTO);
+        }
+        if (position == 2){
+            holder.button1.setImageResource(R.mipmap.ic_evacuator_256);
+            holder.button2.setImageResource(R.mipmap.ic_logo_man_ev);
+            holder.button3.setImageResource(R.mipmap.ic_manipulyator);
+            holder.name1.setText(EVAKUATOR);
+//            holder.name2.setText("TOR");
+            holder.name3.setText(MANIPULYATOR);
+        }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (position == 0) {
-                    alertDialog("Patvirel", "Amragrel", TAXI);
-                }
-                if (position == 1) {
-                    alertDialog("Patvirel", "Amragrel", ARAQICH);
-                }
-                if (position == 2) {
+                Toast.makeText(context, "Button1", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-                }
+        holder.button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Button3", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -68,7 +98,7 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
                 if (c.equals(TAXI)) {
                     replaceFragment(TaxiFragment.newInstance());
                 }
-                if (c.equals(ARAQICH)) {
+                if (c.equals(SHIPPING)) {
                     replaceFragment(AraqichFragment.newInstance());
                 }
             }
@@ -77,7 +107,7 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
                 if (c.equals(TAXI)) {
                     replaceFragment(TaxiAmragrumFragment.newInstance());
                 }
-                if (c.equals(ARAQICH)) {
+                if (c.equals(SHIPPING)) {
                     replaceFragment(AraqichAmragrumFragment.newInstance());
                 }
             }
@@ -101,13 +131,21 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
-        private ImageView button;
+        private final ImageView button1;
+        private final ImageView button2;
+        private final ImageView button3;
+        private final TextView name1;
+        private final TextView name2;
+        private final TextView name3;
 
         MyViewHolder(View view) {
             super(view);
-            button = (ImageView) view.findViewById(R.id.home_recycler_button);
+            button1 = (ImageView) view.findViewById(R.id.home_recycler_button_1);
+            button2 = (ImageView) view.findViewById(R.id.home_recycler_button_2);
+            button3 = (ImageView) view.findViewById(R.id.home_recycler_button_3);
+            name1 = (TextView) view.findViewById(R.id.home_recycler_text_1);
+            name2 = (TextView) view.findViewById(R.id.home_recycler_text_2);
+            name3 = (TextView) view.findViewById(R.id.home_recycler_text_3);
         }
     }
-
-
 }

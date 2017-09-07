@@ -9,7 +9,7 @@
     <string name="taxi">Taxi</string>
     <string name="shipping">Shipping</string>
     <string name="evacuator">evacuator</string>
-    <string name="call_free">Call free</string>
+    <string name="order_by_phone_call">order by phone call free</string>
     <string name="go">go</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -2,35 +2,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="15dp"
     tools:context="com.example.android.userapplication.Fragments.HomeFragment">
 
-    <LinearLayout
-        android:id="@+id/liner_fragment_home"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/phone_call"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/call_free"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/phone_call"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="170dp" />
-
-        <TextView
-            android:id="@+id/call_free"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/call_free" />
-
-    </LinearLayout>
+        android:layout_below="@id/phone_call"
+        android:text="@string/order_by_phone_call" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/home_recycler_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/liner_fragment_home"
+        android:layout_below="@id/call_free"
         android:layout_centerInParent="true">
 
     </android.support.v7.widget.RecyclerView>
