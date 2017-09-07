@@ -2,6 +2,7 @@ package com.example.android.userapplication.Adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -12,23 +13,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.userapplication.Activityes.HomeActivity;
+import com.example.android.userapplication.Activityes.MapsActivity;
+import com.example.android.userapplication.Fragments.AraqichAmragrumFragment;
+import com.example.android.userapplication.Fragments.EvakuatorAmragrumFragment;
+import com.example.android.userapplication.Fragments.ManipulyatorAmragrumFragment;
+import com.example.android.userapplication.Fragments.TaxiAmragrumFragment;
 import com.example.android.userapplication.Model.LogoModel;
 import com.example.android.userapplication.R;
 
 import java.util.List;
 
-public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeServiceRecyclerAdapter.MyViewHolder> {
+import static com.example.android.userapplication.Constats.Constant.AMRAGREL;
+import static com.example.android.userapplication.Constats.Constant.EVAKUATOR;
+import static com.example.android.userapplication.Constats.Constant.MANIPULYATOR;
+import static com.example.android.userapplication.Constats.Constant.PATVIREL;
+import static com.example.android.userapplication.Constats.Constant.SHIPPING_AUTO;
+import static com.example.android.userapplication.Constats.Constant.SHIPPING_TRUCK;
+import static com.example.android.userapplication.Constats.Constant.TAXI_SIZE_4;
+import static com.example.android.userapplication.Constats.Constant.TAXI_SIZE_7;
 
-    private static final String TAXI_SIZE_4 = "SIZE 4";
-    private static final String TAXI = "TAXI";
-    private static final String TAXI_SIZE_7 = "SIZE 7";
-    private static final String SHIPPING = "SHIPPING";
-    private static final String SHIPPING_TRUCK = "SHIPPING TRUCK";
-    private static final String SHIPPING_AUTO = "SHIPPING AUTO";
-    private static final String EVAKUATOR = "EVAKUATOR";
-    private static final String MANIPULYATOR = "MANIPULYATOR";
-    private static final String AMRAGREL = "AMRAGREL";
-    private static final String PATVIREL = "PATVIREL";
+public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeServiceRecyclerAdapter.MyViewHolder> {
 
     private List<LogoModel> list;
     private Context context;
@@ -75,13 +79,11 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
             @Override
             public void onClick(View v) {
                 if (position == 0)
-//                    alertDialog();
+                    alertDialog(TAXI_SIZE_4);
                 if (position == 1)
-//                    alertDialog();
-                if (position == 2){
-
-                }
-//                    alertDialog();
+                    alertDialog(SHIPPING_TRUCK);
+                if (position == 2)
+                    alertDialog(EVAKUATOR);
             }
         });
 
@@ -89,13 +91,11 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
             @Override
             public void onClick(View v) {
                 if (position == 0)
-//                    alertDialog();
+                    alertDialog(TAXI_SIZE_7);
                 if (position == 1)
-//                    alertDialog();
-                if (position == 2){
-
-                }
-//                    alertDialog();
+                    alertDialog(SHIPPING_AUTO);
+                if (position == 2)
+                    alertDialog(MANIPULYATOR);
             }
         });
 
@@ -103,13 +103,28 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
 
     private void alertDialog(final String c) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setCancelable(false).setPositiveButton(AMRAGREL, new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setCancelable(false).setPositiveButton(PATVIREL, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-
+                if (c.equals(TAXI_SIZE_4)) intentActivity(MapsActivity.class);
+                if (c.equals(SHIPPING_TRUCK)) intentActivity(MapsActivity.class);
+                if (c.equals(EVAKUATOR)) intentActivity(MapsActivity.class);
+                if (c.equals(TAXI_SIZE_7)) intentActivity(MapsActivity.class);
+                if (c.equals(SHIPPING_AUTO)) intentActivity(MapsActivity.class);
+                if (c.equals(MANIPULYATOR)) intentActivity(MapsActivity.class);
             }
-        }).setNegativeButton(PATVIREL, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(AMRAGREL, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-
+                if (c.equals(TAXI_SIZE_4))
+                    replaceFragment(TaxiAmragrumFragment.newInstance(TAXI_SIZE_4));
+                if (c.equals(SHIPPING_TRUCK))
+                    replaceFragment(AraqichAmragrumFragment.newInstance(SHIPPING_TRUCK));
+                if (c.equals(EVAKUATOR)) replaceFragment(EvakuatorAmragrumFragment.newInstance());
+                if (c.equals(TAXI_SIZE_7))
+                    replaceFragment(TaxiAmragrumFragment.newInstance(TAXI_SIZE_7));
+                if (c.equals(SHIPPING_AUTO))
+                    replaceFragment(AraqichAmragrumFragment.newInstance(SHIPPING_AUTO));
+                if (c.equals(MANIPULYATOR))
+                    replaceFragment(ManipulyatorAmragrumFragment.newInstance());
             }
         });
 
@@ -123,6 +138,11 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
                 .addToBackStack(null)
                 .replace(R.id.container_home_activity, fragment)
                 .commit();
+    }
+
+    private void intentActivity(Class activity) {
+        Intent i = new Intent(context, activity);
+        context.startActivity(i);
     }
 
     @Override

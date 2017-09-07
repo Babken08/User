@@ -3,26 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.android.userapplication.Fragments.TaxiAmragrumFragment">
+    tools:context="com.example.android.userapplication.Fragments.ManipulyatorAmragrumFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="TAXI AMRAGRUM" />
+        android:text="MANIPULYATOR AMRAGRUM" />
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/taxi_today_amragrel"
+            android:id="@+id/manipulyator_today_amragrel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/today" />
 
         <RadioButton
-            android:id="@+id/taxi_tomorrow_amragrel"
+            android:id="@+id/manipulyator_tomorrow_amragrel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tomorrow" />
@@ -39,13 +39,13 @@
         android:layout_gravity="center">
 
         <ImageView
-            android:id="@+id/taxi_location_address"
+            android:id="@+id/manipulyator_location_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_edit_location_black_24dp" />
 
         <EditText
-            android:id="@+id/taxi_address_amragrel"
+            android:id="@+id/manipulyator_address_amragrel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -54,7 +54,7 @@
 
 
     <Button
-        android:id="@+id/taxi_amragrel_ok"
+        android:id="@+id/manipulyator_amragrel_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ok" />

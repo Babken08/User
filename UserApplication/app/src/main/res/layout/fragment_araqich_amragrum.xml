@@ -4,29 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.android.userapplication.Fragments.TaxiAmragrumFragment">
-
-    <RadioGroup
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center">
-
-        <RadioButton
-            android:id="@+id/araqich_trucks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_local_shipping_black_24dp"
-            android:text="@string/trucks" />
-
-        <RadioButton
-            android:id="@+id/araqich_passenger"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_local_taxi_black_24dp"
-            android:text="@string/passenger" />
-    </RadioGroup>
-
-
+        android:layout_gravity="center"
+        android:text="ARAQICH AMRAGRUM" />
     <RadioGroup
         android:layout_gravity="center"
         android:layout_width="wrap_content"
