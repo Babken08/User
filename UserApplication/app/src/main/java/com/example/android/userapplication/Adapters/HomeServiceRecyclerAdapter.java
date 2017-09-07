@@ -10,13 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.userapplication.Activityes.HomeActivity;
-import com.example.android.userapplication.Fragments.AraqichAmragrumFragment;
-import com.example.android.userapplication.Fragments.AraqichFragment;
-import com.example.android.userapplication.Fragments.TaxiAmragrumFragment;
-import com.example.android.userapplication.Fragments.TaxiFragment;
 import com.example.android.userapplication.Model.LogoModel;
 import com.example.android.userapplication.R;
 
@@ -32,7 +27,8 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
     private static final String SHIPPING_AUTO = "SHIPPING AUTO";
     private static final String EVAKUATOR = "EVAKUATOR";
     private static final String MANIPULYATOR = "MANIPULYATOR";
-
+    private static final String AMRAGREL = "AMRAGREL";
+    private static final String PATVIREL = "PATVIREL";
 
     private List<LogoModel> list;
     private Context context;
@@ -50,7 +46,7 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
 
     @Override
     public void onBindViewHolder(final HomeServiceRecyclerAdapter.MyViewHolder holder, final int position) {
-        if (position == 0){
+        if (position == 0) {
             holder.button1.setImageResource(R.mipmap.ic_taxi_256);
             holder.button2.setImageResource(R.mipmap.ic_logo_taxi);
             holder.button3.setImageResource(R.mipmap.ic_taxi_1);
@@ -58,15 +54,15 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
 //            holder.name2.setText(TAXI);
             holder.name3.setText(TAXI_SIZE_7);
         }
-        if (position == 1){
+        if (position == 1) {
             holder.button1.setImageResource(R.mipmap.ic_shipping_256);
             holder.button2.setImageResource(R.mipmap.ic_shipping_logo);
             holder.button3.setImageResource(R.mipmap.ic_shipping_auto);
-            holder.name1.setText(SHIPPING_TRUCK );
+            holder.name1.setText(SHIPPING_TRUCK);
 //            holder.name2.setText(SHIPPING);
             holder.name3.setText(SHIPPING_AUTO);
         }
-        if (position == 2){
+        if (position == 2) {
             holder.button1.setImageResource(R.mipmap.ic_evacuator_256);
             holder.button2.setImageResource(R.mipmap.ic_logo_man_ev);
             holder.button3.setImageResource(R.mipmap.ic_manipulyator);
@@ -78,38 +74,42 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
         holder.button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Button1", Toast.LENGTH_SHORT).show();
+                if (position == 0)
+//                    alertDialog();
+                if (position == 1)
+//                    alertDialog();
+                if (position == 2){
+
+                }
+//                    alertDialog();
             }
         });
 
         holder.button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Button3", Toast.LENGTH_SHORT).show();
+                if (position == 0)
+//                    alertDialog();
+                if (position == 1)
+//                    alertDialog();
+                if (position == 2){
+
+                }
+//                    alertDialog();
             }
         });
 
     }
 
-    private void alertDialog(String a, String b, final String c) {
+    private void alertDialog(final String c) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setCancelable(false).setPositiveButton(a, new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setCancelable(false).setPositiveButton(AMRAGREL, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                if (c.equals(TAXI)) {
-                    replaceFragment(TaxiFragment.newInstance());
-                }
-                if (c.equals(SHIPPING)) {
-                    replaceFragment(AraqichFragment.newInstance());
-                }
+
             }
-        }).setNegativeButton(b, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(PATVIREL, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                if (c.equals(TAXI)) {
-                    replaceFragment(TaxiAmragrumFragment.newInstance());
-                }
-                if (c.equals(SHIPPING)) {
-                    replaceFragment(AraqichAmragrumFragment.newInstance());
-                }
+
             }
         });
 
