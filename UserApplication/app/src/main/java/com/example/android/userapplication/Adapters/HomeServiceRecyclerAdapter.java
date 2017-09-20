@@ -2,7 +2,6 @@ package com.example.android.userapplication.Adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -13,11 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.userapplication.Activityes.HomeActivity;
-import com.example.android.userapplication.Activityes.MapsActivity;
-import com.example.android.userapplication.Fragments.AraqichAmragrumFragment;
-import com.example.android.userapplication.Fragments.EvakuatorAmragrumFragment;
-import com.example.android.userapplication.Fragments.ManipulyatorAmragrumFragment;
-import com.example.android.userapplication.Fragments.TaxiAmragrumFragment;
+import com.example.android.userapplication.Fragments.AmragrumFragment;
+import com.example.android.userapplication.Fragments.MapFragment;
 import com.example.android.userapplication.Model.LogoModel;
 import com.example.android.userapplication.R;
 
@@ -29,6 +25,7 @@ import static com.example.android.userapplication.Constats.Constant.MANIPULYATOR
 import static com.example.android.userapplication.Constats.Constant.PATVIREL;
 import static com.example.android.userapplication.Constats.Constant.SHIPPING_AUTO;
 import static com.example.android.userapplication.Constats.Constant.SHIPPING_TRUCK;
+import static com.example.android.userapplication.Constats.Constant.TAXI;
 import static com.example.android.userapplication.Constats.Constant.TAXI_SIZE_4;
 import static com.example.android.userapplication.Constats.Constant.TAXI_SIZE_7;
 
@@ -111,26 +108,41 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setCancelable(false).setPositiveButton(PATVIREL, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                if (c.equals(TAXI_SIZE_4)) intentActivity(MapsActivity.class);
-                if (c.equals(SHIPPING_TRUCK)) intentActivity(MapsActivity.class);
-                if (c.equals(EVAKUATOR)) intentActivity(MapsActivity.class);
-                if (c.equals(TAXI_SIZE_7)) intentActivity(MapsActivity.class);
-                if (c.equals(SHIPPING_AUTO)) intentActivity(MapsActivity.class);
-                if (c.equals(MANIPULYATOR)) intentActivity(MapsActivity.class);
+                if (c.equals(TAXI_SIZE_4))
+                    replaceFragment(R.id.container_home_activity, MapFragment.newInstance(TAXI_SIZE_4));
+                if (c.equals(SHIPPING_TRUCK))
+                    replaceFragment(R.id.container_home_activity, MapFragment.newInstance(SHIPPING_TRUCK));
+                if (c.equals(EVAKUATOR))
+                    replaceFragment(R.id.container_home_activity, MapFragment.newInstance(EVAKUATOR));
+                if (c.equals(TAXI_SIZE_7))
+                    replaceFragment(R.id.container_home_activity, MapFragment.newInstance(TAXI_SIZE_7));
+                if (c.equals(SHIPPING_AUTO))
+                    replaceFragment(R.id.container_home_activity, MapFragment.newInstance(SHIPPING_AUTO));
+                if (c.equals(MANIPULYATOR))
+                    replaceFragment(R.id.container_home_activity, MapFragment.newInstance(MANIPULYATOR));
             }
         }).setNegativeButton(AMRAGREL, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                if (c.equals(TAXI_SIZE_4))
-                    replaceFragment(TaxiAmragrumFragment.newInstance(TAXI_SIZE_4));
-                if (c.equals(SHIPPING_TRUCK))
-                    replaceFragment(AraqichAmragrumFragment.newInstance(SHIPPING_TRUCK));
-                if (c.equals(EVAKUATOR)) replaceFragment(EvakuatorAmragrumFragment.newInstance());
-                if (c.equals(TAXI_SIZE_7))
-                    replaceFragment(TaxiAmragrumFragment.newInstance(TAXI_SIZE_7));
-                if (c.equals(SHIPPING_AUTO))
-                    replaceFragment(AraqichAmragrumFragment.newInstance(SHIPPING_AUTO));
-                if (c.equals(MANIPULYATOR))
-                    replaceFragment(ManipulyatorAmragrumFragment.newInstance());
+                if (c.equals(TAXI_SIZE_4)) {
+
+                    replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(TAXI + " " + TAXI_SIZE_4), MapFragment.newInstance(TAXI_SIZE_4));
+                }
+                if (c.equals(SHIPPING_TRUCK)) {
+                    replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(SHIPPING_TRUCK), MapFragment.newInstance(SHIPPING_TRUCK));
+                }
+                if (c.equals(EVAKUATOR)) {
+                    replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(EVAKUATOR), MapFragment.newInstance(EVAKUATOR));
+                }
+                if (c.equals(TAXI_SIZE_7)) {
+                    replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(TAXI + " " + TAXI_SIZE_7), MapFragment.newInstance(TAXI_SIZE_7));
+                }
+                if (c.equals(SHIPPING_AUTO)) {
+                    replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(SHIPPING_AUTO), MapFragment.newInstance(SHIPPING_AUTO));
+                }
+
+                if (c.equals(MANIPULYATOR)) {
+                    replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(MANIPULYATOR), MapFragment.newInstance(MANIPULYATOR));
+                }
             }
         });
 
@@ -138,17 +150,21 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
         alertDialog.show();
     }
 
-    private void replaceFragment(Fragment fragment) {
+    private void replaceFragment(int id, Fragment fragment) {
         ((HomeActivity) context).getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
-                .replace(R.id.container_home_activity, fragment)
+                .replace(id, fragment)
                 .commit();
     }
 
-    private void intentActivity(Class activity) {
-        Intent i = new Intent(context, activity);
-        context.startActivity(i);
+    private void replaceFragment(int id1, int id2, Fragment fragment1, Fragment fragment2) {
+        ((HomeActivity) context).getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null)
+                .replace(id1, fragment1)
+                .replace(id2, fragment2)
+                .commit();
     }
 
     @Override

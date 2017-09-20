@@ -13,4 +13,11 @@ public class Constant {
     public static final String MANIPULYATOR = "MANIPULYATOR";
     public static final String AMRAGREL = "AMRAGREL";
     public static final String PATVIREL = "PATVIREL";
+    public static final String AMRAGREL_FRAGMENT = "AMRAGREL_FRAGMENT";
+
+
+    public static final String LATITUDE = "LATITUDE";
+    public static final String LONGITUDE = "LONGITUDE";
+
+
 }

@@ -21,4 +21,6 @@
     <string name="passenger">Passenger</string>
     <string name="trucks">Trucks</string>
     <string name="title_activity_maps">Map</string>
+    <string name="search">search</string>
+    <string name="search_location">search location</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.android.userapplication.Fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,12 +40,23 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        ImageView imageCall = (ImageView) rootView.findViewById(R.id.phone_call);
-        imageCall.setImageResource(R.mipmap.phone_call_128x128);
-
+        callService(rootView);
         imageList();
         homeServiceRecycler(rootView);
         return rootView;
+    }
+
+    private void callService(View rootView) {
+        ImageView imageCall = (ImageView) rootView.findViewById(R.id.phone_call);
+        imageCall.setImageResource(R.mipmap.phone_call_128x128);
+        imageCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_CALL);
+                i.setData(Uri.parse("tel:123456789"));
+                startActivity(i);
+            }
+        });
     }
 
     private void homeServiceRecycler(View rootView) {
