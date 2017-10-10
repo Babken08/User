@@ -3,18 +3,25 @@ package com.example.android.userapplication.Fragments;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,29 +30,38 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.android.userapplication.Activityes.HomeActivity;
 import com.example.android.userapplication.R;
 import com.example.android.userapplication.Service.GPSTracker;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 import static com.example.android.userapplication.Constats.Constant.EVAKUATOR;
-import static com.example.android.userapplication.Constats.Constant.MANIPULYATOR;
-import static com.example.android.userapplication.Constats.Constant.SHIPPING_AUTO;
 import static com.example.android.userapplication.Constats.Constant.SHIPPING_TRUCK;
 import static com.example.android.userapplication.Constats.Constant.TAXI_SIZE_4;
 import static com.example.android.userapplication.Constats.Constant.TAXI_SIZE_7;
@@ -62,7 +78,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private FusedLocationProviderClient mFusedLocationClient;
     private LatLng ltlng;
     private EditText edSearchLocation;
-    private String patvirel;
+    private LocationManager locationManager;
+    private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private int PLACE_PICKER_REQUEST = 1;
+    private Marker marker;
 
     public MapFragment() {
     }
@@ -78,9 +97,87 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ((HomeActivity) getActivity()).getSupportActionBar().hide();
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+//        try {
+//            startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+//        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+//            e.printStackTrace();
+//        }
+
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.i("ssssssssssssssss", "Refreshed token: " + refreshedToken);
+
         serviceIntentFilter();
         mFusedLocationClient = new FusedLocationProviderClient(getActivity());
+    }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == PLACE_PICKER_REQUEST) {
+//            if (resultCode == RESULT_OK) {
+//                Place place = PlacePicker.getPlace(data, getActivity());
+//                String toastMsg = String.format("Place: %s", place.getName());
+//                Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_LONG).show();
+//            }
+//        }
+
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(getActivity(), data);
+
+                Log.i("sssssssssss", "Place: " + place.getName());
+                edSearchLocation.setText(place.getName());
+                String locatio = edSearchLocation.getText().toString();
+                if (!locatio.isEmpty()) {
+
+                    List<Address> addressList = null;
+                    Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+                    try {
+                        addressList = geocoder.getFromLocationName(locatio, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (addressList != null && addressList.size() > 0) {
+
+                        String addressLine = addressList.get(0).getAddressLine(0);
+
+                        Log.i("ssssssssssssssss", addressLine);
+                        if (marker != null){
+                            marker.remove();
+                        }
+                        Toast.makeText(getActivity(), locatio, Toast.LENGTH_SHORT).show();
+                        Address address = addressList.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+//                        marker = mMap.addMarker(new MarkerOptions().position(latLng));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(address.getLatitude(), address.getLongitude()), 18.0f));
+
+                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+                                Toast.makeText(getActivity(), "Marker", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                        });
+
+                    } else {
+                        Toast.makeText(getActivity(), "Entry currently name ", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(getActivity(), data);
+                // TODO: Handle the error.
+                Log.i("ssssssssss", status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
     }
 
     private void serviceIntentFilter() {
@@ -92,8 +189,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             public void onReceive(Context context, Intent intent) {
                 double lat = intent.getDoubleExtra("lat", 0);
                 double lng = intent.getDoubleExtra("lng", 0);
-
-
             }
         };
         IntentFilter intFilt = new IntentFilter("SERVICE_GPS");
@@ -114,37 +209,52 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private void rootViewFindById(View rootView) {
         edSearchLocation = (EditText) rootView.findViewById(R.id.et_search_location);
         ImageView btnSearch = (ImageView) rootView.findViewById(R.id.btn_search);
-        ImageView imgPatvirel = (ImageView) rootView.findViewById(R.id.img_patvirel);
+        ImageView markerMap = (ImageView) rootView.findViewById(R.id.marker_map);
+
+        markerMap.setImageDrawable(getResources().getDrawable(R.drawable.map_evakuator));
+
+        edSearchLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                        .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                        .build();
+                try {
+                    Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                            .setFilter(typeFilter)
+                            .build(getActivity());
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                }
+            }
+        });
 
         if (getArguments() != null) {
-            patvirel = getArguments().getString("patvirel");
+            String patvirel = getArguments().getString("patvirel");
             if (patvirel.equals(TAXI_SIZE_4)) {
-                imgPatvirel.setImageResource(R.mipmap.ic_taxi_256);
+                markerMap.setImageResource(R.drawable.map_taxi4);
             }
-            if (patvirel.equals(SHIPPING_TRUCK)){
-                imgPatvirel.setImageResource(R.mipmap.ic_shipping_256);
+            if (patvirel.equals(SHIPPING_TRUCK)) {
+                markerMap.setImageResource(R.drawable.map_shipping);
             }
-            if (patvirel.equals(EVAKUATOR)){
-                imgPatvirel.setImageResource(R.mipmap.ic_evacuator_256);
+            if (patvirel.equals(EVAKUATOR)) {
+                markerMap.setImageResource(R.drawable.map_evakuator);
             }
-            if (patvirel.equals(TAXI_SIZE_7)){
-                imgPatvirel.setImageResource(R.mipmap.ic_taxi_1);
-            }
-            if (patvirel.equals(SHIPPING_AUTO)){
-                imgPatvirel.setImageResource(R.mipmap.ic_shipping_auto);
-            }
-            if (patvirel.equals(MANIPULYATOR)){
-                imgPatvirel.setImageResource(R.mipmap.ic_manipulyator);
+            if (patvirel.equals(TAXI_SIZE_7)) {
+                markerMap.setImageResource(R.drawable.map_taxi7);
             }
         }
 
-        btnSearch.setImageResource(R.mipmap.ic_logo_search);
+        btnSearch.setImageResource(R.drawable.ic_logo_search);
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSearch();
             }
         });
+
+
     }
 
     @Override
@@ -170,6 +280,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         buildVersionSDK();
+        mMap.getFocusedBuilding();
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
+
+        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                CameraPosition cameraPosition = mMap.getCameraPosition();
+                Log.i("ssssssssssssss", String.valueOf(cameraPosition.target.latitude));
+                Log.i("sssssssssssssssss", String.valueOf(cameraPosition.target.longitude));
+            }
+        });
+
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+
+            }
+
+        });
     }
 
     private void buildVersionSDK() {
@@ -189,19 +318,64 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
+                            if (!isOnline()) {
+                                enableDisableDialog("Enabled Internet");
+                            }
                             ltlng = new LatLng(location.getLatitude(), location.getLongitude());
                             CameraUpdate center = CameraUpdateFactory.newLatLng(ltlng);
                             mMap.moveCamera(center);
                             mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 3000, null);
-                            Log.i("ssssssssssssssssssss", location.getLatitude() + "    " + location.getLongitude());
-                            Toast.makeText(getActivity(), location.getLatitude() + "    " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+                            Log.i("ssssssssssssssssssss", "FusedLocation" + location.getLatitude() + "    " + location.getLongitude());
+                        } else {
+                            if (!isOnline()) {
+                                enableDisableDialog("Enabled Internet");
+                            }
+                            GPSStatus();
+                            if (!GPSStatus()) {
+                                enableDisableDialog("Enabled GPS");
+                            }
                         }
                     }
                 });
     }
 
-    public void onSearch() {
+    private void enableDisableDialog(final String title) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setCancelable(false).setPositiveButton("Enabled", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (title.equals("Enabled Internet")) {
+                    WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    wifiManager.setWifiEnabled(true);
+                }
+                if (title.equals("Enabled GPS")) {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
 
+                }
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                replaceFragment(R.id.container_home_activity, HomeFragment.newInstance());
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private boolean GPSStatus() {
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null;
+    }
+
+    public void onSearch() {
         if (mMap != null) {
             mMap.clear();
         }
@@ -222,11 +396,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 String addressLine = addressList.get(0).getAddressLine(0);
 
                 Log.i("ssssssssssssssss", addressLine);
-
+                if (marker != null){
+                    marker.remove();
+                }
                 Toast.makeText(getActivity(), locatio, Toast.LENGTH_SHORT).show();
                 Address address = addressList.get(0);
-                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(latLng));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(address.getLatitude(), address.getLongitude()), 18.0f));
 
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -281,9 +455,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        ((HomeActivity) getActivity()).getSupportActionBar().show();
         getActivity().getApplicationContext().stopService(serviceIntent);
         if (mbroadcastReceiver != null) {
             getActivity().unregisterReceiver(mbroadcastReceiver);
         }
+    }
+
+    private void replaceFragment(int id, Fragment fragment) {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null)
+                .replace(id, fragment)
+                .commit();
     }
 }

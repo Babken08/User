@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment {
 
     private void callService(View rootView) {
         ImageView imageCall = (ImageView) rootView.findViewById(R.id.phone_call);
-        imageCall.setImageResource(R.mipmap.phone_call_128x128);
+        imageCall.setImageResource(R.drawable.phone_call_128x128);
         imageCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +68,6 @@ public class HomeFragment extends Fragment {
 
     private void imageList() {
         imageList = new ArrayList<>();
-        imageList.add(model);
         imageList.add(model);
         imageList.add(model);
     }

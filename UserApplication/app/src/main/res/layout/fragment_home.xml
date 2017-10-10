@@ -1,31 +1,32 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#607D8B"
+    android:orientation="vertical"
     tools:context="com.example.android.userapplication.Fragments.HomeFragment">
+
 
     <ImageView
         android:id="@+id/phone_call"
         android:layout_width="wrap_content"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:layout_centerHorizontal="true" />
+        android:padding="15dp" />
 
     <TextView
         android:id="@+id/call_free"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:layout_below="@id/phone_call"
         android:text="@string/order_by_phone_call" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/home_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/call_free"
-        android:layout_centerInParent="true">
+        android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
-</RelativeLayout>
+</LinearLayout>

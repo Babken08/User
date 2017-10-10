@@ -21,9 +21,8 @@ import java.util.List;
 
 import static com.example.android.userapplication.Constats.Constant.AMRAGREL;
 import static com.example.android.userapplication.Constats.Constant.EVAKUATOR;
-import static com.example.android.userapplication.Constats.Constant.MANIPULYATOR;
 import static com.example.android.userapplication.Constats.Constant.PATVIREL;
-import static com.example.android.userapplication.Constats.Constant.SHIPPING_AUTO;
+import static com.example.android.userapplication.Constats.Constant.SHIPPING;
 import static com.example.android.userapplication.Constats.Constant.SHIPPING_TRUCK;
 import static com.example.android.userapplication.Constats.Constant.TAXI;
 import static com.example.android.userapplication.Constats.Constant.TAXI_SIZE_4;
@@ -59,8 +58,6 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
                     alertDialog(TAXI_SIZE_4);
                 if (position == 1)
                     alertDialog(SHIPPING_TRUCK);
-                if (position == 2)
-                    alertDialog(EVAKUATOR);
             }
         });
 
@@ -70,37 +67,23 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
                 if (position == 0)
                     alertDialog(TAXI_SIZE_7);
                 if (position == 1)
-                    alertDialog(SHIPPING_AUTO);
-                if (position == 2)
-                    alertDialog(MANIPULYATOR);
+                    alertDialog(EVAKUATOR);
             }
         });
     }
 
     private void mipmapIcon(MyViewHolder holder, int position) {
         if (position == 0) {
-            holder.button1.setImageResource(R.mipmap.ic_taxi_256);
-            holder.button2.setImageResource(R.mipmap.ic_logo_taxi);
-            holder.button3.setImageResource(R.mipmap.ic_taxi_1);
+            holder.button1.setImageResource(R.drawable.ic_taxi_256);
+            holder.button3.setImageResource(R.drawable.ic_taxi_1);
             holder.name1.setText(TAXI_SIZE_4);
-//            holder.name2.setText(TAXI);
             holder.name3.setText(TAXI_SIZE_7);
         }
         if (position == 1) {
-            holder.button1.setImageResource(R.mipmap.ic_shipping_256);
-            holder.button2.setImageResource(R.mipmap.ic_shipping_logo);
-            holder.button3.setImageResource(R.mipmap.ic_shipping_auto);
-            holder.name1.setText(SHIPPING_TRUCK);
-//            holder.name2.setText(SHIPPING);
-            holder.name3.setText(SHIPPING_AUTO);
-        }
-        if (position == 2) {
-            holder.button1.setImageResource(R.mipmap.ic_evacuator_256);
-            holder.button2.setImageResource(R.mipmap.ic_logo_man_ev);
-            holder.button3.setImageResource(R.mipmap.ic_manipulyator);
-            holder.name1.setText(EVAKUATOR);
-//            holder.name2.setText("TOR");
-            holder.name3.setText(MANIPULYATOR);
+            holder.button1.setImageResource(R.drawable.ic_shipping_256);
+            holder.name1.setText(SHIPPING);
+            holder.button3.setImageResource(R.drawable.ic_evacuator_256);
+            holder.name3.setText(EVAKUATOR);
         }
     }
 
@@ -116,10 +99,6 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
                     replaceFragment(R.id.container_home_activity, MapFragment.newInstance(EVAKUATOR));
                 if (c.equals(TAXI_SIZE_7))
                     replaceFragment(R.id.container_home_activity, MapFragment.newInstance(TAXI_SIZE_7));
-                if (c.equals(SHIPPING_AUTO))
-                    replaceFragment(R.id.container_home_activity, MapFragment.newInstance(SHIPPING_AUTO));
-                if (c.equals(MANIPULYATOR))
-                    replaceFragment(R.id.container_home_activity, MapFragment.newInstance(MANIPULYATOR));
             }
         }).setNegativeButton(AMRAGREL, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -135,13 +114,6 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
                 }
                 if (c.equals(TAXI_SIZE_7)) {
                     replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(TAXI + " " + TAXI_SIZE_7), MapFragment.newInstance(TAXI_SIZE_7));
-                }
-                if (c.equals(SHIPPING_AUTO)) {
-                    replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(SHIPPING_AUTO), MapFragment.newInstance(SHIPPING_AUTO));
-                }
-
-                if (c.equals(MANIPULYATOR)) {
-                    replaceFragment(R.id.container_home_activity, R.id.container_home, AmragrumFragment.newInstance(MANIPULYATOR), MapFragment.newInstance(MANIPULYATOR));
                 }
             }
         });
@@ -174,19 +146,15 @@ public class HomeServiceRecyclerAdapter extends RecyclerView.Adapter<HomeService
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         private final ImageView button1;
-        private final ImageView button2;
         private final ImageView button3;
         private final TextView name1;
-        private final TextView name2;
         private final TextView name3;
 
         MyViewHolder(View view) {
             super(view);
             button1 = (ImageView) view.findViewById(R.id.home_recycler_button_1);
-            button2 = (ImageView) view.findViewById(R.id.home_recycler_button_2);
             button3 = (ImageView) view.findViewById(R.id.home_recycler_button_3);
             name1 = (TextView) view.findViewById(R.id.home_recycler_text_1);
-            name2 = (TextView) view.findViewById(R.id.home_recycler_text_2);
             name3 = (TextView) view.findViewById(R.id.home_recycler_text_3);
         }
     }

@@ -25,6 +25,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        getSupportActionBar().setTitle("");
+
         replaceFragment(HomeFragment.newInstance());
 //        FirebaseAuth();
     }
