@@ -3,25 +3,20 @@ package com.example.android.userapplication.Fragments;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +28,7 @@ import android.widget.Toast;
 import com.example.android.userapplication.Activityes.HomeActivity;
 import com.example.android.userapplication.R;
 import com.example.android.userapplication.Service.GPSTracker;
+import com.example.android.userapplication.utilityes.GPSUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -43,7 +39,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -52,7 +47,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
@@ -80,7 +74,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private EditText edSearchLocation;
     private LocationManager locationManager;
     private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    private int PLACE_PICKER_REQUEST = 1;
+    private static final int REQUEST_CHECK_SETTINGS = 0x1;
+    private GPSUtil util;
+
     private Marker marker;
 
     public MapFragment() {
@@ -98,14 +94,71 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((HomeActivity) getActivity()).getSupportActionBar().hide();
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
-//        try {
-//            startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
-//        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
-//            e.printStackTrace();
+
+
+//        if (mGoogleApiClient == null) {
+//            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+//                    .addApi(LocationServices.API)
+//                    .addConnectionCallbacks(this)
+//                    .addOnConnectionFailedListener(this).build();
+//            mGoogleApiClient.connect();
+//
+//            LocationRequest locationRequest = LocationRequest.create();
+//            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//            locationRequest.setInterval(30 * 1000);
+//            locationRequest.setFastestInterval(5 * 1000);
+//            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+//                    .addLocationRequest(locationRequest);
+//
+//            //**************************
+//            builder.setAlwaysShow(true); //this is the key ingredient
+//            //**************************
+//
+//            PendingResult<LocationSettingsResult> result =
+//                    LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+//            result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+//                @Override
+//                public void onResult(LocationSettingsResult result) {
+//                    final Status status = result.getStatus();
+//                    final LocationSettingsStates state = result.getLocationSettingsStates();
+//                    switch (status.getStatusCode()) {
+//                        case LocationSettingsStatusCodes.SUCCESS: {
+//                            // All location settings are satisfied. The client can initialize location
+//                            // requests here.
+//                            Log.i("sssssssssssssss", "success");
+//                            break;
+//                        }
+//                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED: {
+//                            // Location settings are not satisfied. But could be fixed by showing the user
+//                            // a dialog.
+//                            Log.i("sssssssssssssss", "RESOLUTION_REQUIRED");
+//                            try {
+//                                // Show the dialog by calling startResolutionForResult(),
+//                                // and check the result in onActivityResult().
+//                                status.startResolutionForResult(
+//                                        getActivity(), 1000);
+//                            } catch (IntentSender.SendIntentException e) {
+//                                // Ignore the error.
+//                            }
+//                            break;
+//                        }
+//                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE: {
+//                            // Location settings are not satisfied. However, we have no way to fix the
+//                            // settings so we won't show the dialog.
+//                            Log.i("sssssssssssssss", "SETTINGS_CHANGE_UNAVAILABLE");
+//                            break;
+//                        }
+//                        case LocationSettingsStatusCodes.CANCELED: {
+//                            Log.i("sssssssssssssss", "CANCELED");
+//                            break;
+//                        }
+//                    }
+//                }
+//            });
 //        }
+
+        ((HomeActivity) getActivity()).getSupportActionBar().hide();
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.i("ssssssssssssssss", "Refreshed token: " + refreshedToken);
@@ -117,13 +170,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == PLACE_PICKER_REQUEST) {
-//            if (resultCode == RESULT_OK) {
-//                Place place = PlacePicker.getPlace(data, getActivity());
-//                String toastMsg = String.format("Place: %s", place.getName());
-//                Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_LONG).show();
-//            }
-//        }
 
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -148,7 +194,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         String addressLine = addressList.get(0).getAddressLine(0);
 
                         Log.i("ssssssssssssssss", addressLine);
-                        if (marker != null){
+                        if (marker != null) {
                             marker.remove();
                         }
                         Toast.makeText(getActivity(), locatio, Toast.LENGTH_SHORT).show();
@@ -187,8 +233,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mbroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+
                 double lat = intent.getDoubleExtra("lat", 0);
                 double lng = intent.getDoubleExtra("lng", 0);
+
+                Log.i("sssssssssssssss", lat + " asdasdadasd " + lng);
+                buildVersionSDK();
+
+                cameraCenter(lat, lng);
             }
         };
         IntentFilter intFilt = new IntentFilter("SERVICE_GPS");
@@ -201,8 +253,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         rootViewFindById(rootView);
-
-
         return rootView;
     }
 
@@ -217,7 +267,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                        .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                        .setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
                         .build();
                 try {
                     Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
@@ -253,8 +303,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 onSearch();
             }
         });
-
-
     }
 
     @Override
@@ -273,6 +321,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     .addApi(LocationServices.API)
                     .build();
             mGoogleApiClient.connect();
+            util = new GPSUtil(getActivity(), mGoogleApiClient);
         }
     }
 
@@ -283,22 +332,66 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mMap.getFocusedBuilding();
         mMap.getUiSettings().setRotateGesturesEnabled(false);
 
-        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
-            public void onCameraMove() {
-                CameraPosition cameraPosition = mMap.getCameraPosition();
-                Log.i("ssssssssssssss", String.valueOf(cameraPosition.target.latitude));
-                Log.i("sssssssssssssssss", String.valueOf(cameraPosition.target.longitude));
+            public boolean onMyLocationButtonClick() {
+                return true;
             }
         });
 
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
+                CameraPosition cameraPosition = mMap.getCameraPosition();
+                Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+                Log.i("ssssssssssssss cameraPosition", String.valueOf(cameraPosition.target.latitude));
+                Log.i("ssssssssssssss cameraPosition", String.valueOf(cameraPosition.target.longitude));
+                updateAddress(cameraPosition, geocoder);
+            }
+        });
+    }
 
+    private void updateAddress(CameraPosition cameraPosition, Geocoder geocoder) {
+        List<Address> addressList = null;
+
+        try {
+            addressList = geocoder.getFromLocation(cameraPosition.target.latitude, cameraPosition.target.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (addressList != null && addressList.size() > 0) {
+
+            String addressLine = addressList.get(0).getAddressLine(0);
+
+            Log.i("ssssssssssssssss addressLine", addressLine);
+            if (marker != null) {
+                marker.remove();
+            }
+            String s = addressLine;
+            String a = s;
+            char[] r = s.toCharArray();
+            for (int i = 0; i < r.length; i++) {
+                if (r[i] == ',') {
+                    a = s.substring(0, i);
+                    Log.i("ssssssssssssssssss +        aaaaaaaaaaaaaaaaaaaaaaa", a);
+                    edSearchLocation.setText(a);
+                    break;
+                }
             }
 
-        });
+
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Toast.makeText(getActivity(), "Marker", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+
+        } else {
+            Toast.makeText(getActivity(), "Entry currently name ", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void buildVersionSDK() {
@@ -306,67 +399,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             if (ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-                buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
             }
         } else {
-            buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            if (!isOnline()) {
-                                enableDisableDialog("Enabled Internet");
-                            }
-                            ltlng = new LatLng(location.getLatitude(), location.getLongitude());
-                            CameraUpdate center = CameraUpdateFactory.newLatLng(ltlng);
-                            mMap.moveCamera(center);
-                            mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 3000, null);
-                            Log.i("ssssssssssssssssssss", "FusedLocation" + location.getLatitude() + "    " + location.getLongitude());
-                        } else {
-                            if (!isOnline()) {
-                                enableDisableDialog("Enabled Internet");
-                            }
-                            GPSStatus();
-                            if (!GPSStatus()) {
-                                enableDisableDialog("Enabled GPS");
-                            }
-                        }
-                    }
-                });
+        buildGoogleApiClient();
+//        mFusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        if (GPSStatus() && isOnline()) {
+//                            if (location != null) {
+//                                cameraCenter(location.getLatitude(), location.getLongitude());
+//                                Log.i("ssssssssssssssssssss", "FusedLocation " + location.getLatitude() + "    " + location.getLongitude());
+//                            }
+//                        } else {
+//                            util.settingsrequest();
+////                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//                            WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//                            wifiManager.setWifiEnabled(true);
+//                        }
+//                    }
+//                });
     }
 
-    private void enableDisableDialog(final String title) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setCancelable(false).setPositiveButton("Enabled", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                if (title.equals("Enabled Internet")) {
-                    WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    wifiManager.setWifiEnabled(true);
-                }
-                if (title.equals("Enabled GPS")) {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-
-                }
-            }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                replaceFragment(R.id.container_home_activity, HomeFragment.newInstance());
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+    private void cameraCenter(double lat, double lng) {
+        ltlng = new LatLng(lat, lng);
+        CameraUpdate center = CameraUpdateFactory.newLatLng(ltlng);
+        mMap.moveCamera(center);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 3000, null);
     }
 
     private boolean GPSStatus() {
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
     }
 
     private boolean isOnline() {
@@ -396,7 +463,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 String addressLine = addressList.get(0).getAddressLine(0);
 
                 Log.i("ssssssssssssssss", addressLine);
-                if (marker != null){
+                if (marker != null) {
                     marker.remove();
                 }
                 Toast.makeText(getActivity(), locatio, Toast.LENGTH_SHORT).show();
@@ -417,13 +484,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     if (ContextCompat.checkSelfPermission(getActivity(),
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
@@ -442,6 +509,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+
     }
 
     @Override
@@ -469,4 +537,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 .replace(id, fragment)
                 .commit();
     }
+
+
 }

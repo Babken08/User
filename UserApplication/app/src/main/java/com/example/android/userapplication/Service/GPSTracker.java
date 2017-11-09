@@ -9,7 +9,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -36,7 +35,7 @@ public class GPSTracker extends Service implements LocationListener {
 
                 if (isGPSEnabled) {
                     if (mlocation == null) {
-                        mlocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                        mlocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, this);
                         if (mlocationManager != null) {
                             mlocation = mlocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         }
@@ -66,7 +65,6 @@ public class GPSTracker extends Service implements LocationListener {
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
     }
 
     @Override
@@ -76,8 +74,6 @@ public class GPSTracker extends Service implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
-        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+
     }
 }
